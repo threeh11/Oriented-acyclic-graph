@@ -9,8 +9,56 @@ int main()
 {
     setRussianLangue();
 
+    struct Graph* graph = create();
+    struct Graph* start = graph;
+    struct Graph* root = graph;
+
     int tool = getTools();
-    struct Graph* animal = create();
+    while (tool != 8)
+    {    
+        switch (tool)
+        {
+            case 1:
+            {
+                int countGraph = amount(graph, 0);
+                std::cout << countGraph << std::endl;
+
+                break;
+            }
+            case 2:
+            {
+                addGraph(graph);
+                break;
+            }
+            case 3:
+            {
+                
+
+                break;
+            }
+            case 4:
+            {
+                removeGraph(root);
+                break;
+            }
+            case 5:
+            {
+                removeGraphs(start);
+                break;
+            }
+            case 6:
+            {
+                root = changePosition(root);
+                break;
+            }
+            case 7:
+            {
+                getValue(root);
+                break;
+            }
+        }
+        tool = getTools();
+    }
     
     return 0;
 }
