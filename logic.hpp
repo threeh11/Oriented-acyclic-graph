@@ -32,21 +32,6 @@ int getTools()
     return numberTool;
 }
 
-int getCountPointers(){
-    printf("Введите количество дочерних элементов: ");
-    int count;
-    std::cin >> count;
-    if (count > 0 && count < 10)
-    {
-        return count;
-    }
-    else 
-    {
-        std::cout << "Неккоректный ввод!" << std::endl;
-        exit(0);
-    }
-}
-
 struct Graph
 {
     string typeAnimal;
@@ -55,7 +40,6 @@ struct Graph
     string mainColor;
     string gender;
     
-    int countChild;
     struct Graph* pointers[];
 };
 
@@ -81,6 +65,11 @@ struct Graph* fillGraph(struct Graph* fresh)
     tmp->name = answer[2];
     tmp->mainColor = answer[3];
     tmp->gender = answer[4];
+
+    for (int i = 0; i < 10; i++)
+    {
+        tmp->pointers[i] = NULL;
+    }
 
     return tmp; 
 }
@@ -109,64 +98,51 @@ struct Graph* startCreate()
 struct Graph* create()
 {
     struct Graph* start = startCreate();
-    start->countChild = getCountPointers();
     start = fillGraph(start);
-
-    for (int i = 0; i < start->countChild; i++)
-    {
-        start->pointers[i] = NULL;
-    }
 
     std::cout << "Граф успешно создан!" << std::endl;
 
     return start;
 }
 
-int amount(struct Graph* graph, int count)
+int amount(struct Graph* graph, int countGraph)
 {
-    int countGraph = count;
-    if(graph != NULL){
-        struct Graph* tmp = graph;
-
-        for(int i = 0; i < tmp->countChild; i++)
-        {
-            countGraph++;
-            amount(tmp->pointers[i], countGraph);
-        } 
-    }
-    else
+    int count = countGraph;
+    count++;
+    if (graph->pointers[0] != NULL)
     {
-        return countGraph - 1;
-    }
-}
-
-void addGraph(struct Graph* tmp)
-{
-    struct Graph* graph = tmp; 
-    struct Graph* fresh = new Graph;
-    bool flag = false;
-
-    fresh->countChild = getCountPointers();
-    fresh = fillGraph(fresh);
-
-    for (int i = 0; i < graph->countChild; i++)
-    {
-        if (graph->pointers[i] == NULL && flag == false)
+        int childGraph = 0;
+        while (graph->pointers[childGraph] != NULL)
         {
-            flag = true;
-            graph->pointers[i] = fresh;
-            std::cout << "Граф успешно создан!" << std::endl;   
+            amount(graph->pointers[childGraph], count);
+            childGraph++;
         }
     }
-    if (flag == false)
-    {
-        std::cout << "Граф уже заполнен!" << std::endl;
-    }
+    return count;
+}
+
+void addGraph(struct Graph* root)
+{
+    struct Graph* graph = root;
+    struct Graph* fresh = new Graph;
+
+    fresh = fillGraph(fresh);
+
+    int childGraph = 0;
+    do {
+        if (graph->pointers[childGraph] == NULL)
+        {
+            graph->pointers[childGraph] = fresh;
+            break;
+        }
+            childGraph++;
+    } while (graph->pointers[childGraph] != NULL);
 }
 
 void getValue(struct Graph* graph)
 {
     std::cout << std::endl;
+    std::cout << graph << std::endl;
     std::cout << "Тип домашнего животного: " << graph->typeAnimal << std::endl;
     std::cout << "Порода домашнего животного: " << graph->race << std::endl;
     std::cout << "Имя домашнего животного: "  << graph->name<< std::endl;
@@ -176,16 +152,18 @@ void getValue(struct Graph* graph)
 }
 
 struct Graph* changePosition(struct Graph* root)
-{  
+{   
+    struct Graph* startPosition = root;
     struct Graph* tmp = root;
+
+    std::cout << "Вы находитесь в " << tmp << " графе." << std::endl;
+
     int countChildren = 0;
 
-    for (int i = 0; i < tmp->countChild; i++)
+    while (tmp->pointers[countChildren] != NULL)
     {
-        if (tmp->pointers[i] != NULL)
-        {
-            countChildren++;        
-        }
+        std::cout << tmp->pointers[countChildren] << std::endl;
+        countChildren++;
     }
 
     if (countChildren == 0)
@@ -201,12 +179,18 @@ struct Graph* changePosition(struct Graph* root)
         {
             tmp = tmp->pointers[0];
             std::cout << "Вы успешно поменяли граф!" << std::endl;
+            countChildren = 0;
             return tmp;
+        }
+        else if (answer == "n")
+        {
+            std::cout << "Ну нет, так нет";
+            return startPosition;
         }
         else
         {
             std::cout << "Введено не корректное значение!" << std::endl;
-            changePosition(tmp);
+            changePosition(startPosition);
         }
     }
     else
@@ -218,45 +202,55 @@ struct Graph* changePosition(struct Graph* root)
         if (answer > 0 && answer <= countChildren)
         {
             std::cout << "Вы успешно поменяли граф!" << std::endl;
-            tmp = tmp->pointers[answer];
+            tmp = tmp->pointers[answer-1];
+            countChildren = 0;
+            return tmp;
         }
         else
         {
             answer = 0;
             std::cout << "Введено не корректное значение" << std::endl;
-            changePosition(tmp);
+            changePosition(startPosition);
         }
-
         return tmp;
     }
 }
 
 void removeGraph(struct Graph* graph)
 {
-    struct Graph* tmp = graph;
-    std::cout << "Выполнено удаление с " << tmp << " Графа" << endl;
-    delete graph;
-
-    for (int i = 0; i < tmp->countChild; i++)
+    if (graph->pointers[0] != NULL)
     {
-        tmp = tmp->pointers[i];
-        delete tmp; 
+        int i = 0;
+        while (graph->pointers[i] != NULL)
+        {
+            removeGraph(graph->pointers[i]);
+            i++;
+        }
     }
-    
+    else 
+    {
+        delete graph;   
+    }
+    std::cout << "Выполнено удаление графа" << endl;
+
 }
 
-void removeGraphs(struct Graph* root)
+void removeGraphs(struct Graph* start)
 {
-    struct Graph* tmp = root;
-    std::cout << "Выполнено удаление структуры данных" << endl;
-    delete root;
-
-    for (int i = 0; i < tmp->countChild; i++)
+    if (start->pointers[0] != NULL)
     {
-        tmp = tmp->pointers[i];
-        delete tmp; 
+        int i = 0;
+        while (start->pointers[i] != NULL)
+        {
+            removeGraphs(start->pointers[i]);
+            i++;
+        }
     }
-    
+    else 
+    {
+        delete start;   
+    }
+    std::cout << "Выполнено удаление структуры данных" << endl;
 }
 
 void insertGraph(struct Graph* root)

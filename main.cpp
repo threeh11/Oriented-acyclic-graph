@@ -20,14 +20,14 @@ int main()
         {
             case 1:
             {
-                int countGraph = amount(graph, 0);
+                int countGraph = amount(start, 0);
                 std::cout << countGraph << std::endl;
 
                 break;
             }
             case 2:
             {
-                addGraph(graph);
+                addGraph(root);
                 break;
             }
             case 3:
