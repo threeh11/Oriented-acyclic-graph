@@ -7,11 +7,10 @@ using namespace std;
 
 int main()
 {
-    setRussianLangue();
-
     struct Graph* graph = create();
     struct Graph* start = graph;
     struct Graph* root = graph;
+    struct Graph* previosRoot = NULL;
 
     int tool = getTools();
     while (tool != 8)
@@ -20,9 +19,10 @@ int main()
         {
             case 1:
             {
-                int countGraph = amount(start, 0);
-                std::cout << countGraph << std::endl;
-
+                int count = amount(start);
+                cout << "---------------------------------------------------------------" << endl;
+                cout << "|       Количество графов в структуре данных = "<< count <<"              |" << endl;
+                cout << "---------------------------------------------------------------" << endl;
                 break;
             }
             case 2:
@@ -31,23 +31,33 @@ int main()
                 break;
             }
             case 3:
-            {
-                
-
+            {   
+                insertGraph(root);
                 break;
             }
             case 4:
             {
                 removeGraph(root);
+                cout << "---------------------------------------------------------------" << endl;
+                cout << "|        Выполнено удаление с графа {{"<< root <<"}}             |" << endl;
+                cout << "---------------------------------------------------------------" << endl;
+                root = previosRoot;
                 break;
             }
             case 5:
             {
                 removeGraphs(start);
+                cout << "---------------------------------------------------------------" << endl;
+                cout << "|            Выполнено удаление структуры данных              |" << endl;
+                cout << "---------------------------------------------------------------" << endl;
+                graph = create();
+                start = graph;
+                root = graph;
                 break;
             }
             case 6:
             {
+                previosRoot = root;
                 root = changePosition(root);
                 break;
             }

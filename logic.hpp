@@ -4,31 +4,29 @@
 
 using namespace std;
 
-void setRussianLangue()
-{
-    system("chcp 1251");
-    setlocale(LC_ALL, "Russian");
-}
-
 void printTools()
 {
-    std::cout << std::endl;
-    printf("1)Получение количества элементов в структуре данных\n");
-    printf("2)Добавление элемента в структуру данных\n");
-    printf("3)Вставка дочернего элемента для текущего элемента\n");
-    printf("4)Удаление текущего элемента структуры данных\n");
-    printf("5)Очистка структуры данных\n");
-    printf("6)Перемещение по элементам структуры данных\n");
-    printf("7)Чтение информации из текущего элемента структуры данных\n");
-    printf("8)Выйти\n");
-    std::cout << std::endl;
+    cout << endl;
+    cout << "---------------------------------------------------------------" << endl;
+    cout << "|                         МЕНЮ                                |" << endl;
+    cout << "| 1)Получение количества элементов в структуре данных         |" << endl;
+    cout << "| 2)Добавление элемента в структуру данных                    |" << endl;
+    cout << "| 3)Вставка дочернего элемента для текущего элемента          |" << endl;
+    cout << "| 4)Удаление текущего элемента структуры данных               |" << endl;
+    cout << "| 5)Очистка структуры данных                                  |" << endl;
+    cout << "| 6)Перемещение по элементам структуры данных                 |" << endl;
+    cout << "| 7)Чтение информации из текущего элемента структуры данных   |" << endl;
+    cout << "| 8)Выйти                                                     |" << endl;
+    cout << "--------------------------------------------------------------" << endl;
+    cout << endl;
 }
 
 int getTools()
 {
     printTools();
-    int numberTool;
-    std::cin >> numberTool;
+    int numberTool = 0;
+    cout << "Введите цифру: ";
+    cin >> numberTool;
     return numberTool;
 }
 
@@ -40,25 +38,28 @@ struct Graph
     string mainColor;
     string gender;
     
-    struct Graph* pointers[];
+    struct Graph* pointers[10];
 };
 
 struct Graph* fillGraph(struct Graph* fresh)
-{ 
+{
+    cout << "---------------------------------------------------------------" << endl;
+    cout << "|                     Заполняем граф...                       |" << endl;
+    cout << "---------------------------------------------------------------" << endl;
     struct Graph* tmp = fresh;
 
     string answer[5];
 
-    std::cout << "Введите тип домашнего животного: ";
-    std::cin >> answer[0];
-    std::cout << "Введите породу домашнего животного: ";
-    std::cin >> answer[1];
-    std::cout << "Введите имя домашнего животного: ";
-    std::cin >> answer[2];
-    std::cout << "Введите преоблодающий цвет домашнего животного: ";
-    std::cin >> answer[3];
-    std::cout << "Введите пол домашнего животного: ";
-    std::cin >> answer[4];
+    cout << "Введите тип домашнего животного: ";
+    cin >> answer[0];
+    cout << "Введите породу домашнего животного: ";
+    cin >> answer[1];
+    cout << "Введите имя домашнего животного: ";
+    cin >> answer[2];
+    cout << "Введите преоблодающий цвет домашнего животного: ";
+    cin >> answer[3];
+    cout << "Введите пол домашнего животного: ";
+    cin >> answer[4];
 
     tmp->typeAnimal = answer[0];
     tmp->race = answer[1];
@@ -77,8 +78,10 @@ struct Graph* fillGraph(struct Graph* fresh)
 struct Graph* startCreate()
 {
     string answer;
-    std::cout << "Вы желаете создать структуру данных граф('y' - да, 'n' - нет):" << std::endl;
-    std::cin >> answer; 
+
+    cout << "Вы желаете создать структуру данных граф('y' - да, 'n' - нет):" << endl;
+    cin >> answer; 
+
     if (answer == "y")
     {
         struct Graph* start = new Graph;
@@ -90,9 +93,10 @@ struct Graph* startCreate()
     }
     else
     {
-        std::cout << "Не правильно введены данные!" << std::endl;
-        startCreate();    
+        cout << "Не правильно введены данные!" << endl;
+        exit(0);   
     }
+    return NULL;
 }
 
 struct Graph* create()
@@ -100,108 +104,135 @@ struct Graph* create()
     struct Graph* start = startCreate();
     start = fillGraph(start);
 
-    std::cout << "Граф успешно создан!" << std::endl;
+    cout << endl;
+    cout << "---------------------------------------------------------------" << endl;
+    cout << "|                   Граф успешно создан!                      |" << endl;
+    cout << "---------------------------------------------------------------" << endl;
 
     return start;
 }
 
-int amount(struct Graph* graph, int countGraph)
+int amount(struct Graph* graph)
 {
-    int count = countGraph;
-    count++;
-    if (graph->pointers[0] != NULL)
+    int count = 0;
+
+    if (graph == NULL)
     {
-        int childGraph = 0;
-        while (graph->pointers[childGraph] != NULL)
-        {
-            amount(graph->pointers[childGraph], count);
-            childGraph++;
-        }
+        return 0;
+    }
+    else if (graph != NULL)
+    {
+        count++;
+    }
+    for (int i = 0; i < 10; i++)
+    {
+        count += amount(graph->pointers[i]);
     }
     return count;
 }
 
 void addGraph(struct Graph* root)
 {
-    struct Graph* graph = root;
     struct Graph* fresh = new Graph;
 
     fresh = fillGraph(fresh);
 
-    int childGraph = 0;
-    do {
-        if (graph->pointers[childGraph] == NULL)
+    for (int i = 0; i < 10; i++)
+    {
+        if (root->pointers[i] == NULL)
         {
-            graph->pointers[childGraph] = fresh;
+            root->pointers[i] = fresh;
             break;
         }
-            childGraph++;
-    } while (graph->pointers[childGraph] != NULL);
+        if (i == 9)
+        {
+            cout << "Добавление не возможно достигнуто максимальное количество дочерних графов!" << endl;    
+        }
+    }
 }
 
 void getValue(struct Graph* graph)
 {
-    std::cout << std::endl;
-    std::cout << graph << std::endl;
-    std::cout << "Тип домашнего животного: " << graph->typeAnimal << std::endl;
-    std::cout << "Порода домашнего животного: " << graph->race << std::endl;
-    std::cout << "Имя домашнего животного: "  << graph->name<< std::endl;
-    std::cout << "Преоблодающий цвет домашнего животного: " << graph->mainColor << std::endl;
-    std::cout << "Пол домашнего животного: " << graph->gender << std::endl;
-    std::cout << std::endl;
+    cout << endl;
+
+    cout << "---------------------------------------------------------------" << endl;
+    cout << "                      {{" << graph << "}}" << endl;
+    cout << "Тип домашнего животного: " << graph->typeAnimal << endl;
+    cout << "Порода домашнего животного: " << graph->race << endl;
+    cout << "Имя домашнего животного: "  << graph->name << endl;
+    cout << "Преоблодающий цвет домашнего животного: " << graph->mainColor << endl;
+    cout << "Пол домашнего животного: " << graph->gender << endl;
+    cout << "---------------------------------------------------------------" << endl;
+    cout << endl;
 }
 
 struct Graph* changePosition(struct Graph* root)
 {   
     struct Graph* startPosition = root;
     struct Graph* tmp = root;
-
-    std::cout << "Вы находитесь в " << tmp << " графе." << std::endl;
+    cout << "---------------------------------------------------------------" << endl;
+    cout << "          Вы находитесь в {{" << root << "}} графе." << endl;
+    cout << "---------------------------------------------------------------" << endl;
 
     int countChildren = 0;
 
     while (tmp->pointers[countChildren] != NULL)
     {
-        std::cout << tmp->pointers[countChildren] << std::endl;
         countChildren++;
     }
 
     if (countChildren == 0)
     {
-        std::cout << "У графа нет дочерних элементов переход не возможен!" << std::endl;
+        cout << "---------------------------------------------------------------" << endl;
+        cout << "       У графа нет дочерних элементов переход не возможен!" << endl;
+        cout << "---------------------------------------------------------------" << endl;
     }
     else if (countChildren == 1)
     {
-        std::cout << "У графа 1 дочерний элемент, перейти к нему('y' - да, 'n' - нет):" << std::endl;
+        cout << "У графа 1 дочерний элемент, перейти к нему('y' - да, 'n' - нет):" << endl;
         string answer;
-        std::cin >> answer;
+        cin >> answer;
         if (answer == "y") 
         {
             tmp = tmp->pointers[0];
-            std::cout << "Вы успешно поменяли граф!" << std::endl;
+            cout << "---------------------------------------------------------------" << endl;
+            cout << "                    Вы успешно поменяли граф!" << endl;
+            cout << "---------------------------------------------------------------" << endl;
             countChildren = 0;
             return tmp;
         }
         else if (answer == "n")
         {
-            std::cout << "Ну нет, так нет";
+            cout << "Ну нет, так нет";
             return startPosition;
         }
         else
         {
-            std::cout << "Введено не корректное значение!" << std::endl;
+            cout << "Введено не корректное значение!" << endl;
             changePosition(startPosition);
         }
     }
     else
     {
-        int answer;
-        std::cout << "Выберите Граф к которому хотите перейти, всего дочерних графов = " << countChildren << std::endl;
-        std::cin >> answer;
+        int answer = 0;
+        cout << "---------------------------------------------------------------" << endl;
+        cout << "Выберите Граф к которому хотите перейти, всего дочерних графов = " << countChildren << endl;
+        cout << "---------------------------------------------------------------" << endl;
+
+        cout << "---------------------------------------------------------------" << endl;
+        for (int i = 0; i < countChildren; i++)
+        {
+            cout << i+1 << ")" << root->pointers[i] << endl;
+        }
+        cout << "---------------------------------------------------------------" << endl;
+        cout << "Выберите граф: ";
+        cin >> answer;
         
         if (answer > 0 && answer <= countChildren)
         {
-            std::cout << "Вы успешно поменяли граф!" << std::endl;
+            cout << "---------------------------------------------------------------" << endl;
+            cout << "               Вы успешно поменяли граф!" << endl;
+            cout << "---------------------------------------------------------------" << endl;
             tmp = tmp->pointers[answer-1];
             countChildren = 0;
             return tmp;
@@ -209,51 +240,96 @@ struct Graph* changePosition(struct Graph* root)
         else
         {
             answer = 0;
-            std::cout << "Введено не корректное значение" << std::endl;
+            cout << "Введено не корректное значение" << endl;
             changePosition(startPosition);
         }
-        return tmp;
     }
+    return tmp;
 }
 
 void removeGraph(struct Graph* graph)
 {
-    if (graph->pointers[0] != NULL)
+    if (graph != NULL)
     {
-        int i = 0;
-        while (graph->pointers[i] != NULL)
+        for (int i = 0; i < 10; i++)
         {
             removeGraph(graph->pointers[i]);
-            i++;
         }
     }
-    else 
-    {
-        delete graph;   
-    }
-    std::cout << "Выполнено удаление графа" << endl;
-
+    delete graph;
 }
 
 void removeGraphs(struct Graph* start)
 {
-    if (start->pointers[0] != NULL)
+    if (start != NULL)
     {
-        int i = 0;
-        while (start->pointers[i] != NULL)
+        for (int i = 0; i < 10; i++)
         {
             removeGraphs(start->pointers[i]);
-            i++;
         }
     }
-    else 
-    {
-        delete start;   
-    }
-    std::cout << "Выполнено удаление структуры данных" << endl;
+    delete start;
+}
+
+void insert(struct Graph* root, struct Graph* child)
+{
+    root->typeAnimal = child->typeAnimal;
+    root->race = child->race;
+    root->name = child->name;
+    root->mainColor = child->mainColor;
+    root->gender = child->gender;
 }
 
 void insertGraph(struct Graph* root)
 {
-    
+    int countChildren = 0;
+    for (int i = 0; i < 10; i++)
+    {
+        if (root->pointers[i] != NULL)
+        {
+            countChildren++;
+        }
+    }
+    if (countChildren == 0)
+    {
+        cout << "---------------------------------------------------------------" << endl;
+        cout << "      У графа нет дочерних элементов вставка невозможна!" << endl;
+        cout << "---------------------------------------------------------------" << endl;
+    }
+    else if (countChildren == 1)
+    {
+        cout << "У графа один дочерний элемент выполнить вставку('y' - да, 'n' - нет)?" << endl;
+        string answer;
+        cin >> answer;
+        if (answer == "y")
+        {
+            insert(root, root->pointers[0]);
+        }
+        else if (answer == "n") 
+        {
+            cout << "Ну нет, дак нет" << endl;
+        }
+        else 
+        {
+            cout << "Не корректно введенные данные" << endl;
+        }
+    }
+    else if (countChildren > 1)
+    {
+        cout << "---------------------------------------------------------------" << endl;
+        cout << "       У графа " << countChildren << "дочерних элементов   ";
+        cout << "---------------------------------------------------------------" << endl;
+
+        cout << "---------------------------------------------------------------" << endl;
+        for (int i = 0; i < countChildren; i++)
+        {
+            cout << i+1 << ")" << root->pointers[i] << endl;
+        }
+        cout << "---------------------------------------------------------------" << endl;
+        cout << "Выберите граф: ";
+        int answer = 0;
+        cin >> answer;
+        insert(root, root->pointers[answer-1]);
+    }
 }
+
